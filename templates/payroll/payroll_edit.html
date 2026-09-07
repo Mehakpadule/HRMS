@@ -1,0 +1,614 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
+    <link rel="stylesheet" href="{% static 'css/hrms.css' %}">
+
+    <title>Edit Payroll</title>
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-logo">H</div>
+            <div>
+                <h2>HRMS</h2>
+                <p>Management System</p>
+            </div>
+        </div>
+
+        <div class="menu-section">
+
+            <p class="menu-label">MAIN MENU</p>
+
+            <a href="/api/dashboard/" class="menu-link">
+                <span class="icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/api/employee-list/" class="menu-link">
+                <span class="icon">♙</span>
+                <span>Employees</span>
+            </a>
+            <a href="/api/department-list/" class="menu-link">
+                <span class="icon">▦</span>
+                <span>Departments</span>
+            </a>
+            <a href="/api/attendance-list/" class="menu-link">
+                <span class="icon">✓</span>
+                <span>Attendance</span>
+            </a>
+            <a href="/api/leave-list/" class="menu-link">
+                <span class="icon">▣</span>
+                <span>Leaves</span>
+            </a>
+            <a href="/api/payroll-list/" class="menu-link active">
+                <span class="icon">₹</span>
+                <span>Payroll</span>
+            </a>
+
+            <p class="menu-label system-label">SYSTEM</p>
+
+            <a href="#" class="menu-link">
+                <span class="icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+        </div>
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-user">
+                <div class="user-avatar">A</div>
+                <div class="user-details">
+                    <strong>Admin</strong>
+                    <span>Administrator</span>
+                </div>
+            </div>
+
+            <button class="logout-btn" onclick="hrmsLogout()">
+                <span>⇥</span>
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+                <h3>Payroll</h3>
+                <span class="crumb">Payroll / Edit record</span>
+            </div>
+
+            <div class="topbar-right">
+
+                <button class="notification">♢<span></span></button>
+
+                <div class="top-user">
+                    <div class="top-avatar">A</div>
+                    <div class="top-user-info">
+                        <strong>Admin</strong>
+                        <small>Administrator</small>
+                    </div>
+                    <b>⌄</b>
+                </div>
+
+            </div>
+
+        </header>
+
+        <div class="content">
+
+            <div class="page-header">
+                <div>
+                    <h1>Edit Payroll</h1>
+                    <p>Update the details below and save your changes.</p>
+                </div>
+
+            </div>
+
+
+
+            <button class="secondary" onclick="goToDashboard()">
+            Dashboard
+            </button>
+
+            <button class="secondary" onclick="goToPayrollList()">
+            Payroll List
+            </button>
+
+            <br><br>
+
+
+            <form id="payrollForm">
+
+
+            <label>Employee</label>
+
+            <br>
+
+            <select id="employee" required>
+
+            <option value="">
+            Select Employee
+            </option>
+
+            </select>
+
+            <br><br>
+
+
+            <label>Month</label>
+
+            <br>
+
+            <input
+            type="month"
+            id="month"
+            required
+            >
+
+            <br><br>
+
+
+            <label>Basic Salary</label>
+
+            <br>
+
+            <input
+            type="number"
+            id="basic_salary"
+            min="0"
+            step="0.01"
+            required
+            >
+
+            <br><br>
+
+
+            <label>Allowances</label>
+
+            <br>
+
+            <input
+            type="number"
+            id="allowances"
+            min="0"
+            step="0.01"
+            >
+
+            <br><br>
+
+
+            <label>Deductions</label>
+
+            <br>
+
+            <input
+            type="number"
+            id="deductions"
+            min="0"
+            step="0.01"
+            >
+
+            <br><br>
+
+
+            <label>Payment Status</label>
+
+            <br>
+
+            <select id="payment_status">
+
+            <option value="Pending">
+            Pending
+            </option>
+
+            <option value="Paid">
+            Paid
+            </option>
+
+            </select>
+
+            <br><br>
+
+
+            <button type="submit">
+            Update Payroll
+            </button>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+    function hrmsLogout() {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        window.location.href = "/api/login/";
+    }
+</script>
+
+<script>
+
+const token = localStorage.getItem("access_token");
+
+
+if (!token) {
+
+    window.location.href = "/api/login/";
+
+}
+
+
+// =========================
+// GET PAYROLL ID
+// =========================
+
+const pathParts =
+    window.location.pathname.split("/");
+
+const payrollId =
+    pathParts[pathParts.length - 2];
+
+
+// =========================
+// LOAD EMPLOYEES
+// =========================
+
+function loadEmployees() {
+
+    return fetch("/api/employees/", {
+
+        headers: {
+
+            "Authorization":
+                "Bearer " + token
+
+        }
+
+    })
+
+    .then(response => {
+
+        if (response.status === 401) {
+
+            window.location.href =
+                "/api/login/";
+
+            return;
+
+        }
+
+        return response.json();
+
+    })
+
+    .then(data => {
+
+        if (!data) {
+            return;
+        }
+
+
+        let employees = [];
+
+
+        if (Array.isArray(data)) {
+
+            employees = data;
+
+        }
+        else if (Array.isArray(data.results)) {
+
+            employees = data.results;
+
+        }
+
+
+        const employeeSelect =
+            document.getElementById("employee");
+
+
+        employees.forEach(employee => {
+
+            employeeSelect.innerHTML += `
+
+                <option value="${employee.id}">
+
+                    ${employee.name}
+                    (ID: ${employee.employee_id})
+
+                </option>
+
+            `;
+
+        });
+
+    });
+
+}
+
+
+// =========================
+// LOAD PAYROLL
+// =========================
+
+function loadPayroll() {
+
+    fetch(
+        "/api/payroll/" +
+        payrollId +
+        "/",
+        {
+
+            headers: {
+
+                "Authorization":
+                    "Bearer " + token
+
+            }
+
+        }
+    )
+
+    .then(response => {
+
+        if (response.status === 401) {
+
+            window.location.href =
+                "/api/login/";
+
+            return;
+
+        }
+
+        return response.json();
+
+    })
+
+    .then(payroll => {
+
+        if (!payroll) {
+            return;
+        }
+
+
+        document.getElementById("employee").value =
+            payroll.employee;
+
+
+        document.getElementById("month").value =
+            payroll.month;
+
+
+        document.getElementById("basic_salary").value =
+            payroll.basic_salary;
+
+
+        document.getElementById("allowances").value =
+            payroll.allowances;
+
+
+        document.getElementById("deductions").value =
+            payroll.deductions;
+
+
+        document.getElementById("payment_status").value =
+            payroll.payment_status;
+
+    })
+
+    .catch(error => {
+
+        console.log(error);
+
+        alert("Failed to load payroll.");
+
+    });
+
+}
+
+
+// =========================
+// UPDATE PAYROLL
+// =========================
+
+document
+.getElementById("payrollForm")
+.addEventListener(
+    "submit",
+    function(event) {
+
+        event.preventDefault();
+
+
+        const employee =
+            document.getElementById("employee").value;
+
+        const month =
+            document.getElementById("month").value;
+
+        const basic_salary =
+            document.getElementById("basic_salary").value;
+
+        const allowances =
+            document.getElementById("allowances").value || 0;
+
+        const deductions =
+            document.getElementById("deductions").value || 0;
+
+        const payment_status =
+            document.getElementById("payment_status").value;
+
+
+        const net_salary =
+            Number(basic_salary) +
+            Number(allowances) -
+            Number(deductions);
+
+
+        if (net_salary < 0) {
+
+            alert(
+                "Deductions cannot be greater than total salary."
+            );
+
+            return;
+
+        }
+
+
+        const data = {
+
+            employee: employee,
+
+            month: month,
+
+            basic_salary: basic_salary,
+
+            allowances: allowances,
+
+            deductions: deductions,
+
+            net_salary: net_salary,
+
+            payment_status: payment_status
+
+        };
+
+
+        fetch(
+            "/api/payroll/" +
+            payrollId +
+            "/",
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json",
+
+                    "Authorization":
+                        "Bearer " + token
+
+                },
+
+                body: JSON.stringify(data)
+
+            }
+        )
+
+        .then(response => {
+
+            return response.json().then(data => ({
+
+                status: response.status,
+
+                data: data
+
+            }));
+
+        })
+
+        .then(result => {
+
+            if (
+                result.status >= 200 &&
+                result.status < 300
+            ) {
+
+                alert(
+                    "Payroll updated successfully!"
+                );
+
+                window.location.href =
+                    "/api/payroll-list/";
+
+            }
+            else {
+
+                alert(
+                    "Failed to update payroll:\n" +
+                    JSON.stringify(result.data)
+                );
+
+            }
+
+        })
+
+        .catch(error => {
+
+            console.log(error);
+
+            alert("Something went wrong.");
+
+        });
+
+    }
+);
+
+
+// =========================
+// NAVIGATION
+// =========================
+
+function goToPayrollList() {
+
+    window.location.href =
+        "/api/payroll-list/";
+
+}
+
+
+function goToDashboard() {
+
+    window.location.href =
+        "/api/dashboard/";
+
+}
+
+
+// =========================
+// START
+// =========================
+
+loadEmployees()
+.then(() => {
+
+    loadPayroll();
+
+})
+.catch(error => {
+
+    console.log(error);
+
+});
+
+</script>
+
+</body>
+
+</html>

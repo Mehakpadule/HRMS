@@ -1,0 +1,160 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
+    <link rel="stylesheet" href="{% static 'css/hrms.css' %}">
+
+    <title>HRMS Login</title>
+</head>
+
+<body class="login-page">
+
+<div class="login-shell">
+
+    <section class="login-aside">
+
+        <div class="brand">
+            <div class="brand-logo">H</div>
+            <div>
+                <h2>HRMS</h2>
+                <p>Management System</p>
+            </div>
+        </div>
+
+        <div>
+            <h1>Your people, all in one place.</h1>
+            <p>
+                Employees, departments, attendance, leaves and payroll —
+                managed from a single secure workspace.
+            </p>
+        </div>
+
+        <div class="login-points">
+            <div><strong>5</strong> Core modules</div>
+            <div><strong>JWT</strong> Secure access</div>
+            <div><strong>24/7</strong> Availability</div>
+        </div>
+
+    </section>
+
+    <section class="login-panel">
+
+        <div class="login-container">
+
+            <h1>HRMS</h1>
+
+            <h2>Sign in</h2>
+
+            <p class="login-sub">Enter your credentials to access the dashboard.</p>
+
+            <form id="loginForm">
+
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username" required>
+
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password" required>
+
+                <button type="submit">Login</button>
+
+            </form>
+
+            <p id="message"></p>
+
+            <p class="login-foot">Protected area — authorised personnel only.</p>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script>
+
+        document.getElementById("loginForm").addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+                const username =
+                    document.getElementById("username").value;
+
+                const password =
+                    document.getElementById("password").value;
+
+
+                fetch("/api/token/", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+
+                })
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    if (data.access) {
+
+                        // Save JWT tokens
+                        localStorage.setItem(
+                            "access_token",
+                            data.access
+                        );
+
+                        localStorage.setItem(
+                            "refresh_token",
+                            data.refresh
+                        );
+
+
+                        // Redirect to Dashboard
+                        window.location.href =
+                            "/api/dashboard/";
+
+                    }
+
+                    else {
+
+                        document.getElementById("message").innerText =
+                            "Invalid username or password.";
+
+                    }
+
+                })
+
+                .catch(error => {
+
+                    console.log(error);
+
+                    document.getElementById("message").innerText =
+                        "Something went wrong.";
+
+                });
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

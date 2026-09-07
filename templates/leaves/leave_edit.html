@@ -1,0 +1,635 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
+    <link rel="stylesheet" href="{% static 'css/hrms.css' %}">
+
+    <title>Edit Leave</title>
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-logo">H</div>
+            <div>
+                <h2>HRMS</h2>
+                <p>Management System</p>
+            </div>
+        </div>
+
+        <div class="menu-section">
+
+            <p class="menu-label">MAIN MENU</p>
+
+            <a href="/api/dashboard/" class="menu-link">
+                <span class="icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/api/employee-list/" class="menu-link">
+                <span class="icon">♙</span>
+                <span>Employees</span>
+            </a>
+            <a href="/api/department-list/" class="menu-link">
+                <span class="icon">▦</span>
+                <span>Departments</span>
+            </a>
+            <a href="/api/attendance-list/" class="menu-link">
+                <span class="icon">✓</span>
+                <span>Attendance</span>
+            </a>
+            <a href="/api/leave-list/" class="menu-link active">
+                <span class="icon">▣</span>
+                <span>Leaves</span>
+            </a>
+            <a href="/api/payroll-list/" class="menu-link">
+                <span class="icon">₹</span>
+                <span>Payroll</span>
+            </a>
+
+            <p class="menu-label system-label">SYSTEM</p>
+
+            <a href="#" class="menu-link">
+                <span class="icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+        </div>
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-user">
+                <div class="user-avatar">A</div>
+                <div class="user-details">
+                    <strong>Admin</strong>
+                    <span>Administrator</span>
+                </div>
+            </div>
+
+            <button class="logout-btn" onclick="hrmsLogout()">
+                <span>⇥</span>
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+                <h3>Leaves</h3>
+                <span class="crumb">Leaves / Edit request</span>
+            </div>
+
+            <div class="topbar-right">
+
+                <button class="notification">♢<span></span></button>
+
+                <div class="top-user">
+                    <div class="top-avatar">A</div>
+                    <div class="top-user-info">
+                        <strong>Admin</strong>
+                        <small>Administrator</small>
+                    </div>
+                    <b>⌄</b>
+                </div>
+
+            </div>
+
+        </header>
+
+        <div class="content">
+
+            <div class="page-header">
+                <div>
+                    <h1>Edit Leave</h1>
+                    <p>Update the details below and save your changes.</p>
+                </div>
+
+            </div>
+
+
+
+
+            <button class="secondary" onclick="goToDashboard()">
+            Dashboard
+            </button>
+
+            <button class="secondary" onclick="goToLeaveList()">
+            Leave List
+            </button>
+
+            <br><br>
+
+
+            <form id="leaveForm">
+
+
+            <!-- EMPLOYEE -->
+
+            <label>
+            Employee
+            </label>
+
+            <br>
+
+            <select id="employee" required>
+
+            <option value="">
+            Select Employee
+            </option>
+
+            </select>
+
+            <br><br>
+
+
+            <!-- LEAVE TYPE -->
+
+            <label>
+            Leave Type
+            </label>
+
+            <br>
+
+            <select id="leave_type" required>
+
+            <option value="">
+            Select Leave Type
+            </option>
+
+            <option value="Casual Leave">
+            Casual Leave
+            </option>
+
+            <option value="Sick Leave">
+            Sick Leave
+            </option>
+
+            <option value="Annual Leave">
+            Annual Leave
+            </option>
+
+            <option value="Emergency Leave">
+            Emergency Leave
+            </option>
+
+            </select>
+
+            <br><br>
+
+
+            <!-- START DATE -->
+
+            <label>
+            Start Date
+            </label>
+
+            <br>
+
+            <input
+            type="date"
+            id="start_date"
+            required
+            >
+
+            <br><br>
+
+
+            <!-- END DATE -->
+
+            <label>
+            End Date
+            </label>
+
+            <br>
+
+            <input
+            type="date"
+            id="end_date"
+            required
+            >
+
+            <br><br>
+
+
+            <!-- REASON -->
+
+            <label>
+            Reason
+            </label>
+
+            <br>
+
+            <textarea
+            id="reason"
+            rows="4"
+            ></textarea>
+
+            <br><br>
+
+
+            <!-- STATUS -->
+
+            <label>
+            Status
+            </label>
+
+            <br>
+
+            <select id="status">
+
+            <option value="Pending">
+            Pending
+            </option>
+
+            <option value="Approved">
+            Approved
+            </option>
+
+            <option value="Rejected">
+            Rejected
+            </option>
+
+            </select>
+
+            <br><br>
+
+
+            <button type="submit">
+            Update Leave
+            </button>
+
+
+            </form>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+    function hrmsLogout() {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        window.location.href = "/api/login/";
+    }
+</script>
+
+<script>
+
+const token = localStorage.getItem("access_token");
+
+
+if (!token) {
+
+    window.location.href = "/api/login/";
+
+}
+
+
+// =========================
+// GET LEAVE ID
+// =========================
+
+const pathParts =
+    window.location.pathname.split("/");
+
+const leaveId =
+    pathParts[pathParts.length - 2];
+
+
+// =========================
+// LOAD EMPLOYEES
+// =========================
+
+function loadEmployees() {
+
+    return fetch("/api/employees/", {
+
+        headers: {
+
+            "Authorization": "Bearer " + token
+
+        }
+
+    })
+
+    .then(response => {
+
+        if (response.status === 401) {
+
+            window.location.href = "/api/login/";
+
+            return;
+
+        }
+
+        return response.json();
+
+    })
+
+    .then(data => {
+
+        if (!data) {
+            return;
+        }
+
+
+        let employees = [];
+
+
+        if (Array.isArray(data)) {
+
+            employees = data;
+
+        }
+        else if (Array.isArray(data.results)) {
+
+            employees = data.results;
+
+        }
+
+
+        const employeeSelect =
+            document.getElementById("employee");
+
+
+        employees.forEach(employee => {
+
+            employeeSelect.innerHTML += `
+
+                <option value="${employee.id}">
+
+                    ${employee.name}
+                    (ID: ${employee.employee_id})
+
+                </option>
+
+            `;
+
+        });
+
+    });
+
+}
+
+
+// =========================
+// LOAD LEAVE
+// =========================
+
+function loadLeave() {
+
+    fetch(
+        "/api/leaves/" + leaveId + "/",
+        {
+            headers: {
+                "Authorization":
+                    "Bearer " + token
+            }
+        }
+    )
+
+    .then(response => {
+
+        if (response.status === 401) {
+
+            window.location.href = "/api/login/";
+
+            return;
+
+        }
+
+        return response.json();
+
+    })
+
+    .then(leave => {
+
+        if (!leave) {
+            return;
+        }
+
+
+        document.getElementById("employee").value =
+            leave.employee;
+
+
+        document.getElementById("leave_type").value =
+            leave.leave_type;
+
+
+        document.getElementById("start_date").value =
+            leave.start_date;
+
+
+        document.getElementById("end_date").value =
+            leave.end_date;
+
+
+        document.getElementById("reason").value =
+            leave.reason || "";
+
+
+        document.getElementById("status").value =
+            leave.status;
+
+    })
+
+    .catch(error => {
+
+        console.log(error);
+
+        alert("Failed to load leave.");
+
+    });
+
+}
+
+
+// =========================
+// UPDATE LEAVE
+// =========================
+
+document
+.getElementById("leaveForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+
+    const employee =
+        document.getElementById("employee").value;
+
+    const leave_type =
+        document.getElementById("leave_type").value;
+
+    const start_date =
+        document.getElementById("start_date").value;
+
+    const end_date =
+        document.getElementById("end_date").value;
+
+    const reason =
+        document.getElementById("reason").value;
+
+    const status =
+        document.getElementById("status").value;
+
+
+    if (end_date < start_date) {
+
+        alert(
+            "End date cannot be before start date."
+        );
+
+        return;
+
+    }
+
+
+    const data = {
+
+        employee: employee,
+
+        leave_type: leave_type,
+
+        start_date: start_date,
+
+        end_date: end_date,
+
+        reason: reason,
+
+        status: status
+
+    };
+
+
+    fetch(
+        "/api/leaves/" + leaveId + "/",
+        {
+
+            method: "PUT",
+
+            headers: {
+
+                "Content-Type":
+                    "application/json",
+
+                "Authorization":
+                    "Bearer " + token
+
+            },
+
+            body: JSON.stringify(data)
+
+        }
+    )
+
+    .then(response => {
+
+        return response.json().then(data => ({
+
+            status: response.status,
+
+            data: data
+
+        }));
+
+    })
+
+    .then(result => {
+
+        if (
+            result.status >= 200 &&
+            result.status < 300
+        ) {
+
+            alert(
+                "Leave updated successfully!"
+            );
+
+            window.location.href =
+                "/api/leave-list/";
+
+        }
+        else {
+
+            alert(
+                "Failed to update leave:\n" +
+                JSON.stringify(result.data)
+            );
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.log(error);
+
+        alert("Something went wrong.");
+
+    });
+
+});
+
+
+// =========================
+// NAVIGATION
+// =========================
+
+function goToLeaveList() {
+
+    window.location.href =
+        "/api/leave-list/";
+
+}
+
+
+function goToDashboard() {
+
+    window.location.href =
+        "/api/dashboard/";
+
+}
+
+
+// =========================
+// START
+// =========================
+
+loadEmployees()
+.then(() => {
+
+    loadLeave();
+
+})
+.catch(error => {
+
+    console.log(error);
+
+});
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,299 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
+    <link rel="stylesheet" href="{% static 'css/hrms.css' %}">
+
+    <title>Add Department</title>
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-logo">H</div>
+            <div>
+                <h2>HRMS</h2>
+                <p>Management System</p>
+            </div>
+        </div>
+
+        <div class="menu-section">
+
+            <p class="menu-label">MAIN MENU</p>
+
+            <a href="/api/dashboard/" class="menu-link">
+                <span class="icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/api/employee-list/" class="menu-link">
+                <span class="icon">♙</span>
+                <span>Employees</span>
+            </a>
+            <a href="/api/department-list/" class="menu-link active">
+                <span class="icon">▦</span>
+                <span>Departments</span>
+            </a>
+            <a href="/api/attendance-list/" class="menu-link">
+                <span class="icon">✓</span>
+                <span>Attendance</span>
+            </a>
+            <a href="/api/leave-list/" class="menu-link">
+                <span class="icon">▣</span>
+                <span>Leaves</span>
+            </a>
+            <a href="/api/payroll-list/" class="menu-link">
+                <span class="icon">₹</span>
+                <span>Payroll</span>
+            </a>
+
+            <p class="menu-label system-label">SYSTEM</p>
+
+            <a href="#" class="menu-link">
+                <span class="icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+        </div>
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-user">
+                <div class="user-avatar">A</div>
+                <div class="user-details">
+                    <strong>Admin</strong>
+                    <span>Administrator</span>
+                </div>
+            </div>
+
+            <button class="logout-btn" onclick="hrmsLogout()">
+                <span>⇥</span>
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+                <h3>Departments</h3>
+                <span class="crumb">Departments / Add department</span>
+            </div>
+
+            <div class="topbar-right">
+
+                <button class="notification">♢<span></span></button>
+
+                <div class="top-user">
+                    <div class="top-avatar">A</div>
+                    <div class="top-user-info">
+                        <strong>Admin</strong>
+                        <small>Administrator</small>
+                    </div>
+                    <b>⌄</b>
+                </div>
+
+            </div>
+
+        </header>
+
+        <div class="content">
+
+            <div class="page-header">
+                <div>
+                    <h1>Add Department</h1>
+                    <p>Fill in the details and save to create a new record.</p>
+                </div>
+
+            </div>
+
+            <div class="form-container">
+
+
+
+            <form id="departmentForm">
+
+            <label>Department Name</label>
+
+            <input
+            type="text"
+            id="name"
+            placeholder="Enter department name"
+            required
+            >
+
+
+            <label>Description</label>
+
+            <textarea
+            id="description"
+            placeholder="Enter department description"
+            ></textarea>
+
+
+            <button type="submit">
+            Add Department
+            </button>
+
+            <button class="secondary"
+            type="button"
+            onclick="goBack()">
+
+            Cancel
+
+            </button>
+
+            </form>
+
+
+            <p id="message"></p>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+    function hrmsLogout() {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        window.location.href = "/api/login/";
+    }
+</script>
+
+<script>
+
+        const token =
+            localStorage.getItem("access_token");
+
+
+        document
+            .getElementById("departmentForm")
+            .addEventListener(
+                "submit",
+                function(event) {
+
+                    event.preventDefault();
+
+
+                    const name =
+                        document
+                        .getElementById("name")
+                        .value;
+
+                    const description =
+                        document
+                        .getElementById("description")
+                        .value;
+
+
+                    fetch("/api/departments/", {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "Authorization":
+                                "Bearer " + token
+
+                        },
+
+                        body: JSON.stringify({
+
+                            name: name,
+
+                            description:
+                                description
+
+                        })
+
+                    })
+
+                    .then(response => {
+
+                        if (!response.ok) {
+
+                            return response
+                                .json()
+                                .then(data => {
+
+                                    throw new Error(
+                                        JSON.stringify(data)
+                                    );
+
+                                });
+
+                        }
+
+                        return response.json();
+
+                    })
+
+                    .then(data => {
+
+                        document
+                            .getElementById("message")
+                            .innerText =
+                            "Department added successfully!";
+
+                        setTimeout(
+                            function() {
+
+                                window.location.href =
+                                    "/api/department-list/";
+
+                            },
+                            1000
+                        );
+
+                    })
+
+                    .catch(error => {
+
+                        console.log(error);
+
+                        document
+                            .getElementById("message")
+                            .innerText =
+                            "Error adding department.";
+
+                    });
+
+                }
+            );
+
+
+        function goBack() {
+
+            window.location.href =
+                "/api/department-list/";
+
+        }
+
+    </script>
+
+</body>
+
+</html>

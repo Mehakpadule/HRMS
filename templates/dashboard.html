@@ -1,0 +1,971 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
+    <link rel="stylesheet" href="{% static 'css/hrms.css' %}">
+
+    <title>HRMS Dashboard</title>
+
+</head>
+
+<body>
+
+<div class="app">
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-logo">
+                H
+            </div>
+
+            <div>
+                <h2>HRMS</h2>
+                <p>Management System</p>
+            </div>
+
+        </div>
+
+
+        <div class="menu-section">
+
+            <p class="menu-label">MAIN MENU</p>
+
+
+            <a href="#" class="menu-link active">
+                <span class="icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a href="/api/employee-list/" class="menu-link">
+                <span class="icon">♙</span>
+                <span>Employees</span>
+            </a>
+
+
+            <a href="/api/department-list/" class="menu-link">
+                <span class="icon">▦</span>
+                <span>Departments</span>
+            </a>
+
+
+            <a href="/api/attendance-list/" class="menu-link">
+                <span class="icon">✓</span>
+                <span>Attendance</span>
+            </a>
+
+
+            <a href="/api/leave-list/" class="menu-link">
+                <span class="icon">▣</span>
+                <span>Leaves</span>
+            </a>
+
+
+            <a href="/api/payroll-list/" class="menu-link">
+                <span class="icon">₹</span>
+                <span>Payroll</span>
+            </a>
+
+
+            <p class="menu-label system-label">SYSTEM</p>
+
+
+            <a href="#" class="menu-link">
+                <span class="icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+        </div>
+
+
+        <!-- SIDEBAR USER -->
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-user">
+
+                <div class="user-avatar">
+                    A
+                </div>
+
+                <div class="user-details">
+                    <strong>Admin</strong>
+                    <span>Administrator</span>
+                </div>
+
+            </div>
+
+
+            <button class="logout-btn" onclick="logout()">
+
+                <span>⇥</span>
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <h3>Dashboard</h3>
+                <span class="crumb">Overview / Today</span>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <button class="notification">
+                    ♢
+                    <span></span>
+                </button>
+
+
+                <div class="top-user">
+
+                    <div class="top-avatar">
+                        A
+                    </div>
+
+                    <div class="top-user-info">
+
+                        <strong>Admin</strong>
+
+                        <small>Administrator</small>
+
+                    </div>
+
+                    <b>⌄</b>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ================= CONTENT ================= -->
+
+        <div class="content">
+
+
+            <!-- PAGE HEADER -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <h1>Dashboard</h1>
+
+                    <p>
+                        Welcome back, Admin. Here's what's happening in your organization.
+                    </p>
+
+                </div>
+
+
+                <div class="date-card">
+
+                    <span>Today</span>
+
+                    <strong id="todayDate">
+                        Loading...
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= STATISTICS ================= -->
+
+            <div class="stats">
+
+
+                <!-- EMPLOYEES -->
+
+                <div class="stat-card" onclick="openEmployees()">
+
+                    <div class="stat-header">
+
+                        <div class="stat-icon blue">
+                            ♙
+                        </div>
+
+                        <span class="arrow">↗</span>
+
+                    </div>
+
+                    <p>Total Employees</p>
+
+                    <h2 id="employeeCount">
+                        Loading...
+                    </h2>
+
+                    <small class="green">
+                        ● Active workforce
+                    </small>
+
+                </div>
+
+
+
+                <!-- DEPARTMENTS -->
+
+                <div class="stat-card" onclick="openDepartments()">
+
+                    <div class="stat-header">
+
+                        <div class="stat-icon green-icon">
+                            ▦
+                        </div>
+
+                        <span class="arrow">↗</span>
+
+                    </div>
+
+                    <p>Departments</p>
+
+                    <h2 id="departmentCount">
+                        Loading...
+                    </h2>
+
+                    <small>
+                        Organization units
+                    </small>
+
+                </div>
+
+
+
+                <!-- ATTENDANCE -->
+
+                <div class="stat-card" onclick="openAttendance()">
+
+                    <div class="stat-header">
+
+                        <div class="stat-icon purple">
+                            ✓
+                        </div>
+
+                        <span class="arrow">↗</span>
+
+                    </div>
+
+                    <p>Attendance Records</p>
+
+                    <h2 id="attendanceCount">
+                        Loading...
+                    </h2>
+
+                    <small class="green">
+                        ● Attendance tracked
+                    </small>
+
+                </div>
+
+
+
+                <!-- LEAVES -->
+
+                <div class="stat-card" onclick="openLeaves()">
+
+                    <div class="stat-header">
+
+                        <div class="stat-icon orange">
+                            ▣
+                        </div>
+
+                        <span class="arrow">↗</span>
+
+                    </div>
+
+                    <p>Leave Requests</p>
+
+                    <h2 id="leaveCount">
+                        Loading...
+                    </h2>
+
+                    <small>
+                        Leave management
+                    </small>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= LOWER SECTION ================= -->
+
+            <div class="lower-grid">
+
+
+                <!-- PAYROLL -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <h3>Payroll Overview</h3>
+
+                            <p>
+                                Manage employee salary records
+                            </p>
+
+                        </div>
+
+
+                        <button onclick="openPayroll()">
+                            View Payroll →
+                        </button>
+
+                    </div>
+
+
+                    <div class="payroll-box">
+
+                        <div class="payroll-icon">
+                            ₹
+                        </div>
+
+
+                        <div>
+
+                            <span>Total Payroll Records</span>
+
+                            <h2 id="payrollCount">
+                                Loading...
+                            </h2>
+
+                            <p>
+                                Salary records currently maintained in the system.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- QUICK ACTIONS -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <h3>Quick Actions</h3>
+
+                            <p>
+                                Frequently used actions
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-actions">
+
+
+                        <button onclick="openEmployeeAdd()">
+
+                            <span>+</span>
+
+                            Add Employee
+
+                        </button>
+
+
+                        <button onclick="openLeaveAdd()">
+
+                            <span>+</span>
+
+                            Apply Leave
+
+                        </button>
+
+
+                        <button onclick="openAttendanceAdd()">
+
+                            <span>+</span>
+
+                            Mark Attendance
+
+                        </button>
+
+
+                        <button onclick="openPayrollAdd()">
+
+                            <span>+</span>
+
+                            Add Payroll
+
+                        </button>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= MODULES ================= -->
+
+            <div class="modules-panel">
+
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>HRMS Modules</h3>
+
+                        <p>
+                            Manage different areas of your organization
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="modules">
+
+
+                    <div class="module" onclick="openEmployees()">
+
+                        <div class="module-icon blue">
+                            ♙
+                        </div>
+
+                        <div>
+
+                            <strong>Employee Management</strong>
+
+                            <p>
+                                Manage employee information and records
+                            </p>
+
+                        </div>
+
+                        <span>→</span>
+
+                    </div>
+
+
+
+                    <div class="module" onclick="openDepartments()">
+
+                        <div class="module-icon green-icon">
+                            ▦
+                        </div>
+
+                        <div>
+
+                            <strong>Department Management</strong>
+
+                            <p>
+                                Organize departments and teams
+                            </p>
+
+                        </div>
+
+                        <span>→</span>
+
+                    </div>
+
+
+
+                    <div class="module" onclick="openAttendance()">
+
+                        <div class="module-icon purple">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <strong>Attendance Management</strong>
+
+                            <p>
+                                Track employee attendance records
+                            </p>
+
+                        </div>
+
+                        <span>→</span>
+
+                    </div>
+
+
+
+                    <div class="module" onclick="openLeaves()">
+
+                        <div class="module-icon orange">
+                            ▣
+                        </div>
+
+                        <div>
+
+                            <strong>Leave Management</strong>
+
+                            <p>
+                                Manage employee leave requests
+                            </p>
+
+                        </div>
+
+                        <span>→</span>
+
+                    </div>
+
+
+
+                    <div class="module" onclick="openPayroll()">
+
+                        <div class="module-icon teal">
+                            ₹
+                        </div>
+
+                        <div>
+
+                            <strong>Payroll Management</strong>
+
+                            <p>
+                                Manage salary and payroll records
+                            </p>
+
+                        </div>
+
+                        <span>→</span>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+</div>
+
+
+
+<script>
+
+
+// ================= TOKEN =================
+
+const token = localStorage.getItem("access_token");
+
+
+// ================= DATE =================
+
+const today = new Date();
+
+document.getElementById("todayDate").innerText =
+    today.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+
+
+
+// ================= EMPLOYEES =================
+
+fetch("/api/employees/", {
+
+    headers: {
+        "Authorization": "Bearer " + token
+    }
+
+})
+
+.then(response => response.json())
+
+.then(data => {
+
+    if (data.count !== undefined) {
+
+        document.getElementById("employeeCount").innerText =
+            data.count;
+
+    }
+
+    else if (Array.isArray(data)) {
+
+        document.getElementById("employeeCount").innerText =
+            data.length;
+
+    }
+
+    else {
+
+        document.getElementById("employeeCount").innerText = 0;
+
+    }
+
+})
+
+.catch(error => {
+
+    console.log(error);
+
+    document.getElementById("employeeCount").innerText =
+        "Error";
+
+});
+
+
+
+// ================= DEPARTMENTS =================
+
+fetch("/api/departments/", {
+
+    headers: {
+        "Authorization": "Bearer " + token
+    }
+
+})
+
+.then(response => response.json())
+
+.then(data => {
+
+    if (data.count !== undefined) {
+
+        document.getElementById("departmentCount").innerText =
+            data.count;
+
+    }
+
+    else if (Array.isArray(data)) {
+
+        document.getElementById("departmentCount").innerText =
+            data.length;
+
+    }
+
+    else {
+
+        document.getElementById("departmentCount").innerText = 0;
+
+    }
+
+})
+
+.catch(error => {
+
+    console.log(error);
+
+    document.getElementById("departmentCount").innerText =
+        "Error";
+
+});
+
+
+
+// ================= LEAVES =================
+
+fetch("/api/leaves/", {
+
+    headers: {
+        "Authorization": "Bearer " + token
+    }
+
+})
+
+.then(response => response.json())
+
+.then(data => {
+
+    if (data.count !== undefined) {
+
+        document.getElementById("leaveCount").innerText =
+            data.count;
+
+    }
+
+    else if (Array.isArray(data)) {
+
+        document.getElementById("leaveCount").innerText =
+            data.length;
+
+    }
+
+    else if (Array.isArray(data.results)) {
+
+        document.getElementById("leaveCount").innerText =
+            data.results.length;
+
+    }
+
+    else {
+
+        document.getElementById("leaveCount").innerText = 0;
+
+    }
+
+})
+
+.catch(error => {
+
+    console.log(error);
+
+    document.getElementById("leaveCount").innerText =
+        "Error";
+
+});
+
+
+
+// ================= ATTENDANCE =================
+
+fetch("/api/attendance/", {
+
+    headers: {
+        "Authorization": "Bearer " + token
+    }
+
+})
+
+.then(response => response.json())
+
+.then(data => {
+
+    if (data.count !== undefined) {
+
+        document.getElementById("attendanceCount").innerText =
+            data.count;
+
+    }
+
+    else if (Array.isArray(data)) {
+
+        document.getElementById("attendanceCount").innerText =
+            data.length;
+
+    }
+
+    else if (Array.isArray(data.results)) {
+
+        document.getElementById("attendanceCount").innerText =
+            data.results.length;
+
+    }
+
+    else {
+
+        document.getElementById("attendanceCount").innerText = 0;
+
+    }
+
+})
+
+.catch(error => {
+
+    console.log(error);
+
+    document.getElementById("attendanceCount").innerText =
+        "Error";
+
+});
+
+
+
+// ================= PAYROLL =================
+
+fetch("/api/payroll/", {
+
+    headers: {
+        "Authorization": "Bearer " + token
+    }
+
+})
+
+.then(response => response.json())
+
+.then(data => {
+
+    if (data.count !== undefined) {
+
+        document.getElementById("payrollCount").innerText =
+            data.count;
+
+    }
+
+    else if (Array.isArray(data)) {
+
+        document.getElementById("payrollCount").innerText =
+            data.length;
+
+    }
+
+    else if (Array.isArray(data.results)) {
+
+        document.getElementById("payrollCount").innerText =
+            data.results.length;
+
+    }
+
+    else {
+
+        document.getElementById("payrollCount").innerText = 0;
+
+    }
+
+})
+
+.catch(error => {
+
+    console.log(error);
+
+    document.getElementById("payrollCount").innerText =
+        "Error";
+
+});
+
+
+
+// ================= NAVIGATION =================
+
+function openEmployees() {
+
+    window.location.href =
+        "/api/employee-list/";
+
+}
+
+
+function openDepartments() {
+
+    window.location.href =
+        "/api/department-list/";
+
+}
+
+
+function openLeaves() {
+
+    window.location.href =
+        "/api/leave-list/";
+
+}
+
+
+function openAttendance() {
+
+    window.location.href =
+        "/api/attendance-list/";
+
+}
+
+
+function openPayroll() {
+
+    window.location.href =
+        "/api/payroll-list/";
+
+}
+
+
+
+// ================= QUICK ACTIONS =================
+
+function openEmployeeAdd() {
+
+    window.location.href =
+        "/api/employee-add/";
+
+}
+
+
+function openLeaveAdd() {
+
+    window.location.href =
+        "/api/leave-add/";
+
+}
+
+
+function openAttendanceAdd() {
+
+    window.location.href =
+        "/api/attendance-add/";
+
+}
+
+
+function openPayrollAdd() {
+
+    window.location.href =
+        "/api/payroll-add/";
+
+}
+
+
+
+// ================= LOGOUT =================
+
+function logout() {
+
+    localStorage.removeItem("access_token");
+
+    localStorage.removeItem("refresh_token");
+
+    window.location.href =
+        "/api/login/";
+
+}
+
+</script>
+
+
+</body>
+
+</html>
