@@ -13,4 +13,3 @@ sqlparse==0.6.0
 tzdata==2026.5
 whitenoise==6.12.0
 
->>>>>>> 5a3d122 (Update HRMS login and static configuration)
