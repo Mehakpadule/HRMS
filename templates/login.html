@@ -9,7 +9,9 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 
     <link rel="stylesheet" href="{% static 'css/hrms.css' %}">
 
@@ -20,32 +22,53 @@
 
 <div class="login-shell">
 
+    <!-- LEFT SIDE -->
     <section class="login-aside">
 
         <div class="brand">
+
             <div class="brand-logo">H</div>
+
             <div>
                 <h2>HRMS</h2>
                 <p>Management System</p>
             </div>
+
         </div>
 
+
         <div>
+
             <h1>Your people, all in one place.</h1>
+
             <p>
                 Employees, departments, attendance, leaves and payroll —
                 managed from a single secure workspace.
             </p>
+
         </div>
 
+
         <div class="login-points">
-            <div><strong>5</strong> Core modules</div>
-            <div><strong>JWT</strong> Secure access</div>
-            <div><strong>24/7</strong> Availability</div>
+
+            <div>
+                <strong>5</strong> Core modules
+            </div>
+
+            <div>
+                <strong>JWT</strong> Secure access
+            </div>
+
+            <div>
+                <strong>24/7</strong> Availability
+            </div>
+
         </div>
 
     </section>
 
+
+    <!-- RIGHT SIDE -->
     <section class="login-panel">
 
         <div class="login-container">
@@ -54,23 +77,65 @@
 
             <h2>Sign in</h2>
 
-            <p class="login-sub">Enter your credentials to access the dashboard.</p>
+            <p class="login-sub">
+                Enter your credentials to access the dashboard.
+            </p>
 
+
+            <!-- LOGIN FORM -->
             <form id="loginForm">
 
-                <label>Username</label>
-                <input type="text" id="username" placeholder="Enter username" required>
+                <!-- USERNAME -->
+                <label for="username">
+                    Username
+                </label>
 
-                <label>Password</label>
-                <input type="password" id="password" placeholder="Enter password" required>
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Enter username"
+                    required
+                >
 
-                <button type="submit">Login</button>
+
+                <!-- PASSWORD -->
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter password"
+                    required
+                >
+
+
+                <!-- FORGOT PASSWORD -->
+                <div class="forgot-password">
+
+                    <a href="/api/forgot-password/">
+                        Forgot Password?
+                    </a>
+
+                </div>
+
+
+                <!-- LOGIN BUTTON -->
+                <button type="submit">
+                    Login
+                </button>
 
             </form>
 
+
+            <!-- LOGIN MESSAGE -->
             <p id="message"></p>
 
-            <p class="login-foot">Protected area — authorised personnel only.</p>
+
+            <p class="login-foot">
+                Protected area — authorised personnel only.
+            </p>
 
         </div>
 
@@ -78,82 +143,86 @@
 
 </div>
 
+
+<!-- LOGIN JAVASCRIPT -->
 <script>
 
-        document.getElementById("loginForm").addEventListener(
-            "submit",
-            function(event) {
+document.getElementById("loginForm").addEventListener(
+    "submit",
+    function(event) {
 
-                event.preventDefault();
-
-                const username =
-                    document.getElementById("username").value;
-
-                const password =
-                    document.getElementById("password").value;
+        event.preventDefault();
 
 
-                fetch("/api/token/", {
+        const username =
+            document.getElementById("username").value;
 
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        username: username,
-                        password: password
-                    })
-
-                })
-
-                .then(response => response.json())
-
-                .then(data => {
-
-                    if (data.access) {
-
-                        // Save JWT tokens
-                        localStorage.setItem(
-                            "access_token",
-                            data.access
-                        );
-
-                        localStorage.setItem(
-                            "refresh_token",
-                            data.refresh
-                        );
+        const password =
+            document.getElementById("password").value;
 
 
-                        // Redirect to Dashboard
-                        window.location.href =
-                            "/api/dashboard/";
+        fetch("/api/token/", {
 
-                    }
+            method: "POST",
 
-                    else {
+            headers: {
+                "Content-Type": "application/json"
+            },
 
-                        document.getElementById("message").innerText =
-                            "Invalid username or password.";
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
 
-                    }
+        })
 
-                })
+        .then(response => response.json())
 
-                .catch(error => {
+        .then(data => {
 
-                    console.log(error);
+            if (data.access) {
 
-                    document.getElementById("message").innerText =
-                        "Something went wrong.";
+                // Save access token
+                localStorage.setItem(
+                    "access_token",
+                    data.access
+                );
 
-                });
+                // Save refresh token
+                localStorage.setItem(
+                    "refresh_token",
+                    data.refresh
+                );
+
+                // Redirect to dashboard
+                window.location.href =
+                    "/api/dashboard/";
 
             }
-        );
 
-    </script>
+            else {
+
+                document.getElementById("message").innerText =
+                    "Invalid username or password.";
+
+            }
+
+        })
+
+        .catch(error => {
+
+            console.log(error);
+
+            document.getElementById("message").innerText =
+                "Something went wrong.";
+
+        });
+
+    }
+
+);
+
+</script>
 
 </body>
 

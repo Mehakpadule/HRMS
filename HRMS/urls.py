@@ -15,9 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+
 from django.contrib import admin
 from django.urls import path, include
-from django.http import HttpResponse
+from django.shortcuts import redirect
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -25,27 +26,24 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
-    path(
-        '',
-        lambda request: HttpResponse("HRMS API is running successfully!")
-    ),
+    path("", lambda request: redirect("/api/login/")),
 
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
 
-    path('api/', include('employees.urls')),
-    path('api/', include('leaves.urls')),
-    path('api/', include('attendance.urls')),
-    path('api/', include('payroll.urls')),
+    path("api/", include("employees.urls")),
+    path("api/", include("leaves.urls")),
+    path("api/", include("attendance.urls")),
+    path("api/", include("payroll.urls")),
 
     path(
-        'api/token/',
+        "api/token/",
         TokenObtainPairView.as_view(),
-        name='token_obtain_pair'
+        name="token_obtain_pair",
     ),
 
     path(
-        'api/token/refresh/',
+        "api/token/refresh/",
         TokenRefreshView.as_view(),
-        name='token_refresh'
+        name="token_refresh",
     ),
 ]

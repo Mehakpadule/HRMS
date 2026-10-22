@@ -973,3 +973,25 @@ button[type="button"] {
 button.secondary:hover,
 button[type="button"]:hover { background: var(--brand-soft) !important; color: var(--brand-dark) !important; }
 td button, td button.secondary { margin-top: 0; }
+
+
+/* ============================= */
+/* FORGOT PASSWORD */
+/* ============================= */
+
+.forgot-password {
+    text-align: right;
+    margin-top: 8px;
+    margin-bottom: 18px;
+}
+
+.forgot-password a {
+    color: #6c7cff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
