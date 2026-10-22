@@ -176,7 +176,12 @@ document.getElementById("loginForm").addEventListener(
 
         })
 
-        .then(response => response.json())
+        .then(async response => {
+    const text = await response.text();
+    console.log("Status:", response.status);
+    console.log("Response:", text);
+    return JSON.parse(text);
+})
 
         .then(data => {
 
